@@ -168,6 +168,21 @@ def test_model_reproducibility(sample_data, preprocessor):
     predictions1 = model1.predict(X_test)
     predictions2 = model2.predict(X_test)
 
-    assert np.array_equal(
-        predictions1, predictions2
-    ), "モデルの予測結果に再現性がありません"
+    assert np.array_equal(predictions1, predictions2), (
+        "モデルの予測結果に再現性がありません"
+    )
+
+
+def compare_model_test_accuracy_to_train_accuracy(sample_data, train_model):
+    model, X_test, y_test = train_model
+    X = sample_data.drop("Survived", axis=1)
+    y = sample_data["Survived"].astype(int)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
+    train_accuracy = accuracy_score(y_train, model.predict(X_train))
+    test_accuracy = accuracy_score(y_test, model.predict(X_test))
+
+    assert test_accuracy <= 0.8 * train_accuracy, (
+        f"訓練データと比してテストデータでの推論性能の劣化が見られます: 訓練データでのaccuracy = {train_accuracy}, テストデータでのaccuracy = {test_accuracy}"
+    )
