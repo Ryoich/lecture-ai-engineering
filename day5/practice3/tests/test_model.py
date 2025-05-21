@@ -173,7 +173,7 @@ def test_model_reproducibility(sample_data, preprocessor):
     ), "モデルの予測結果に再現性がありません"
 
 
-def compare_model_test_accuracy_to_train_accuracy(sample_data, train_model):
+def test_model_test_accuracy_to_train_accuracy(sample_data, train_model):
     model, X_test, y_test = train_model
     X = sample_data.drop("Survived", axis=1)
     y = sample_data["Survived"].astype(int)
